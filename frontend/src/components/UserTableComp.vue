@@ -1,6 +1,21 @@
 <template>
     <div>
-
+      <PopupModal>
+        <template v-slot:title>
+          <h2>EDIT USER</h2>
+        </template>
+        <template v-slot:content>
+          <label for="username">Enter New Username(Optional):</label>
+          <br>
+          <input type="text" v-model="selectedUser.username">
+          <br>
+          <label for="password">Enter New or Current Password(Required):</label>
+          <br>
+          <input type="password" ref="password">
+          <br><br>
+          <button class="btn btn-warning" @click="updateUserInfo">Update</button>
+        </template>
+      </PopupModal>
 
         <button class="btn btn-danger" @click="resetTb">Reset Table</button>
         <table class="table table-bordered table-striped">
@@ -75,7 +90,7 @@
             editUser(user){
               this.selectedUser.user_id = user.user_id;
               this.selectedUser.username = user.username;
-              this.emitter.emit("editUserModal");
+              this.$emitter.emit("editUserModal");
             },
             updateUserInfo(){
               if(this.$refs.password.value == ''){

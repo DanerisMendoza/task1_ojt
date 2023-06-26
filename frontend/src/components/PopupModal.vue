@@ -25,12 +25,12 @@
 <script>
 export default {
   created() {
-    this.emitter.on("editUserModal", () => {
+    this.$emitter.on("editUserModal", () => {
       this.modalShow = true;
     });
   },
   beforeDestroy() {
-    this.emitter.off("editUserModal");
+    this.$emitter.off("editUserModal");
   },
   data(){
     return{
