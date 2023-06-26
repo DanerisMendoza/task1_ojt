@@ -1,21 +1,6 @@
 <template>
     <div>
-      <PopupModal>
-        <template v-slot:title>
-          <h2>EDIT USER</h2>
-        </template>
-        <template v-slot:content>
-          <label for="username">Enter New Username(Optional):</label>
-          <br>
-          <input type="text" v-model="selectedUser.username">
-          <br>
-          <label for="password">Enter New or Current Password(Required):</label>
-          <br>
-          <input type="password" ref="password">
-          <br><br>
-          <button class="btn btn-warning" @click="updateUserInfo">Update</button>
-        </template>
-      </PopupModal>
+
 
         <button class="btn btn-danger" @click="resetTb">Reset Table</button>
         <table class="table table-bordered table-striped">
@@ -73,6 +58,7 @@
             fetchStudents() {
                 axios.get('/api/viewUser').then(response => {
                     this.users = response.data;
+                    console.log(response.data);
                 })
                 .catch(error => {
                     console.error(error);
@@ -129,9 +115,12 @@
         },
 
         mounted(){
-        window.Echo.channel('channel-user_tb_data').listen('user_tb_data',(e) => {
-            this.users = e.result;
-        });
+          this.$Echo.channel('channel-user_tb_data')
+            .listen('user_tb_data', (e) => {
+              console.log(e.result);
+              this.users = e.result;
+         
+            });
         },
 
 

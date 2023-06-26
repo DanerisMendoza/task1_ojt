@@ -39,7 +39,7 @@ class ApiController extends Controller
         $user->password = bcrypt($request->input('password'));
         $user->role = $request->input('role');
         $user->save();
-        broadcast(new user_tb_data());
+        broadcast(new user_tb_data()); 
         return 'success';
     }
 
