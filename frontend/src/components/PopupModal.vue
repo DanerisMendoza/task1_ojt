@@ -25,8 +25,8 @@
 <script>
 export default {
   created() {
-    this.$emitter.on("editUserModal", () => {
-      this.modalShow = true;
+    this.$emitter.on("editUserModal", (param) => {
+      this.modalShow = param;
     });
   },
   beforeDestroy() {

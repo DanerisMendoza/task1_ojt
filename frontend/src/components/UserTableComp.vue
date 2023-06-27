@@ -18,7 +18,7 @@
     </PopupModal>
 
     <button class="btn btn-danger" @click="resetTb">Reset Table</button>
-
+    <br><br>
     <v-text-field
       v-model="search"
       label="Search"
@@ -58,6 +58,7 @@ import PopupModal from './PopupModal.vue';
 
 export default {
   created() {
+    // this.$swal.fire('Are you sure you want to delete?', 'Welcome to SweetAlert2!', 'success');
     this.fetchStudents();
     this.channel = new BroadcastChannel('modalTrigger');
   },
@@ -112,17 +113,31 @@ export default {
         });
     },
     resetTb() {
-      axios
-        .delete('/api/deleteAllUser')
-        .catch(error => {
-          console.error(error);
+      this.$swal
+        .fire({
+          title: 'Are you sure you want to reset database?',
+          text: "You won't be able to revert this!",
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'No, cancel!',
+        })
+        .then(result => {
+          if (result.isConfirmed) {
+            axios
+            .delete('/api/deleteAllUser')
+            .catch(error => {
+              console.error(error);
+            });
+          }
         });
+   
     },
     // local functions
     editUser(user) {
       this.selectedUser.user_id = user.user_id;
       this.selectedUser.username = user.username;
-      this.$emitter.emit('editUserModal');
+      this.$emitter.emit('editUserModal', true);
     },
     updateUserInfo() {
       if (this.$refs.password.value == '') {
@@ -130,36 +145,68 @@ export default {
         return;
       }
 
-      axios
-        .put('/api/updateUserByUser_id', {
-          user_id: this.selectedUser.user_id,
-          username: this.selectedUser.username,
-          password: this.$refs.password.value,
+      this.$swal
+        .fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, Update it!',
+          cancelButtonText: 'No, cancel!',
         })
-        .then(response => {
-          if (response.data == 'success') {
-            alert('update success!');
-          }
-        })
-        .catch(error => {
-          console.error(error);
+        .then(result => {
+          if (result.isConfirmed) {
+            this.$emitter.emit('editUserModal', false);
+            axios
+            .put('/api/updateUserByUser_id', {
+              user_id: this.selectedUser.user_id,
+              username: this.selectedUser.username,
+              password: this.$refs.password.value,
+            })
+            .then(response => {
+              if (response.data == 'success') {
+                alert('update success!');
+              }
+            })
+            .catch(error => {
+              console.error(error);
+            });
+          } 
         });
+
+    
     },
 
     // Axios does not support sending request bodies with DELETE requests by default.
     deleteUser(user) {
-      axios
+
+      this.$swal
+        .fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'No, cancel!',
+        })
+        .then(result => {
+          if (result.isConfirmed) {
+            axios
         .delete('/api/deleteUserByUser_id', {
-          data: { user_id: user.user_id },
-        })
-        .then(response => {
-          // Success: handle the response
-          alert(response.data);
-        })
-        .catch(error => {
-          // Error: handle the error
-          console.error(error);
+            data: { user_id: user.user_id },
+            })
+            .then(response => {
+              // Success: handle the response
+              alert(response.data);
+            })
+            .catch(error => {
+              // Error: handle the error
+              console.error(error);
+            });
+          } 
         });
+
+  
     },
   },
   mounted() {

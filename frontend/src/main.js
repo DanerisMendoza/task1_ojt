@@ -10,6 +10,7 @@ import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
 import mitt from 'mitt'
 import vuetify from './plugins/vuetify'
+import Swal from 'sweetalert2';
 
 window.Pusher = Pusher
 
@@ -26,6 +27,7 @@ Vue.prototype.$Echo = new Echo({
 const emitter = mitt()
 
 Vue.prototype.$emitter = emitter
+Vue.prototype.$swal = Swal;
 
 new Vue({
   router,

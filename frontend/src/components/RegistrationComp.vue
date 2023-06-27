@@ -24,8 +24,36 @@
                     password: this.$refs.password.value,
                     role:this.role,
                 };
-
-                axios.post('/api/createUser', data)
+                
+                if(this.role == 'admin'){
+                    this.$swal
+                    .fire({
+                    title: 'Are you sure to new create account?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes!',
+                    cancelButtonText: 'No!',
+                    })
+                    .then(result => {
+                    if (result.isConfirmed) {
+                        axios.post('/api/createUser', data)
+                        .then(response => {
+                            const result = response.data;
+                            if(result != 'success'){
+                                alert(result);
+                            }
+                            else{
+                                alert('success');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error.response);
+                        });
+                    } 
+                    });
+                }
+                else if(this.role == 'user'){
+                    axios.post('/api/createUser', data)
                     .then(response => {
                         const result = response.data;
                         if(result != 'success'){
@@ -37,7 +65,11 @@
                     })
                     .catch(error => {
                         console.error('Error:', error.response);
-                });
+                    });
+                }
+
+           
+                
             },
         }
     }
