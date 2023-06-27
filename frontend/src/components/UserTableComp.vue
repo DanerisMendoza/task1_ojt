@@ -7,11 +7,11 @@
       <template v-slot:content>
         <label for="username">Enter New Username(Optional):</label>
         <br />
-        <input type="text" v-model="selectedUser.username" />
+        <input type="text" v-model="selectedUser.username" class="form-control"/>
         <br />
         <label for="password">Enter New or Current Password(Required):</label>
         <br />
-        <input type="password" ref="password" placeholder="password"/>
+        <input type="password" ref="password" placeholder="password" class="form-control"/>
         <br /><br />
         <button class="btn btn-warning" @click="updateUserInfo">Update</button>
       </template>
@@ -22,7 +22,7 @@
     <v-data-table
       :headers="tableHeaders"
       :items="users"
-      :item-key="user => user.user_id"
+      item-key="user_id"
     >
       <template v-slot:item="{ item }">
         <tr>
@@ -81,7 +81,6 @@ export default {
         .get('/api/viewUser')
         .then(response => {
           this.users = response.data;
-          console.log(response.data);
         })
         .catch(error => {
           console.error(error);
@@ -140,7 +139,6 @@ export default {
   },
   mounted() {
     this.$Echo.channel('channel-user_tb_data').listen('user_tb_data', e => {
-      console.log(e.result);
       this.users = e.result;
     });
   },
