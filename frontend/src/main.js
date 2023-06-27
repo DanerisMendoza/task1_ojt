@@ -9,6 +9,7 @@ import 'bootstrap/dist/js/bootstrap.js';
 import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
 import mitt from 'mitt'
+import vuetify from './plugins/vuetify'
 
 window.Pusher = Pusher
 
@@ -28,5 +29,6 @@ Vue.prototype.$emitter = emitter
 
 new Vue({
   router,
+  vuetify,
   render: h => h(App)
 }).$mount('#app')
