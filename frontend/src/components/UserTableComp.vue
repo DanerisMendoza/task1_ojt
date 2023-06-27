@@ -19,9 +19,17 @@
 
     <button class="btn btn-danger" @click="resetTb">Reset Table</button>
 
+    <v-text-field
+      v-model="search"
+      label="Search"
+      clearable
+      outlined
+      dense
+    ></v-text-field>
+
     <v-data-table
       :headers="tableHeaders"
-      :items="users"
+      :items="filteredUsers"
       item-key="user_id"
     >
       <template v-slot:item="{ item }">
@@ -69,8 +77,25 @@ export default {
         { text: 'updated_at', value: 'updated_at' },
         { text: 'Actions', sortable: false },
       ],
+      search: '', // Search input value
     };
   },
+
+  computed: {
+    filteredUsers() {
+      if (!this.search) {
+        return this.users; // Return all users if search input is empty
+      }
+
+      const searchTerm = this.search.toLowerCase();
+
+      // Filter the users based on the search input
+      return this.users.filter(user =>
+        user.username.toLowerCase().includes(searchTerm)
+      );
+    },
+  },
+
   components: {
     PopupModal,
   },
