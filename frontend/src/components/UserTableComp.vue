@@ -144,81 +144,38 @@ export default {
     },
     // local functions
       generateExcel() {
-        const data = this.filteredUsers.map(user => {
-        return {
-          User_ID: user.user_id,
-          Role: user.role,
-          Username: user.username,
-          Password: user.password,
-          Created_At: new Date(user.created_at).toLocaleString(),
-          Updated_At: new Date(user.updated_at).toLocaleString(),
-        };
-      });
+        const data = this.filteredUsers.map(user => ({
+        User_ID: user.user_id,
+        Role: user.role,
+        Username: user.username,
+        Created_At: new Date(user.created_at).toLocaleString(),
+        Updated_At: new Date(user.updated_at).toLocaleString(),
+      }));
 
-      console.log(data);
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet('Sheet1');
-      const widthSize = 50;
+      const widthSize = 30;
 
-      // Add headers
-      worksheet.getCell('A1').value = 'User_ID';
-      worksheet.getCell('B1').value = 'Role';
-      worksheet.getCell('C1').value = 'Username';
-      worksheet.getCell('D1').value = 'Password';
-      worksheet.getCell('E1').value = 'Created_At';
-      worksheet.getCell('F1').value = 'Updated_At';
+      worksheet.columns = [
+        { header: 'User_ID', key: 'User_ID', width: widthSize },
+        { header: 'Role', key: 'Role', width: widthSize },
+        { header: 'Username', key: 'Username', width: widthSize },
+        { header: 'Created_At', key: 'Created_At', width: widthSize },
+        { header: 'Updated_At', key: 'Updated_At', width: widthSize },
+      ];
 
-      // Calculate maximum column width based on cell values
-      const columnWidths = {};
-      data.forEach(row => {
-        Object.keys(row).forEach((key, columnIndex) => {
-          const cellValue = row[key].toString();
-          const columnLetter = String.fromCharCode(65 + columnIndex); // A=65, B=66, etc.
+      worksheet.addRows(data);
 
-          if (!columnWidths[columnLetter] || cellValue.length > columnWidths[columnLetter]) {
-            columnWidths[columnLetter] = cellValue.length;
-          }
-        });
+      worksheet.eachRow(row => {
+        row.alignment = { vertical: 'middle', horizontal: 'left' };
       });
 
-// Adjust column widths
-Object.keys(columnWidths).forEach(column => {
-  const maxCellWidth = Math.max(10, columnWidths[column] + 2); // Minimum width of 10 and add extra padding
-  const columnWidth = Math.min(maxCellWidth, 80); // Limit the column width to a maximum of 30 characters
-
-  worksheet.getColumn(column).width = columnWidth;
-});
-
-
-      // Adjust column widths
-      // worksheet.getColumn('A').width = widthSize; // Set the width for column A
-      // worksheet.getColumn('B').width = widthSize; // Set the width for column B
-      // worksheet.getColumn('C').width = widthSize; // Set the width for column C
-      // worksheet.getColumn('D').width = widthSize; // Set the width for column D
-      // worksheet.getColumn('E').width = widthSize; // Set the width for column E
-      // worksheet.getColumn('F').width = widthSize; // Set the width for column F
-
-      // Add data rows
-      data.forEach((row, rowIndex) => {
-        worksheet.getCell(rowIndex + 2, 1).value = row.User_ID;
-        worksheet.getCell(rowIndex + 2, 2).value = row.Role;
-        worksheet.getCell(rowIndex + 2, 3).value = row.Username;
-        worksheet.getCell(rowIndex + 2, 4).value = row.Password;
-        worksheet.getCell(rowIndex + 2, 5).value = row.Created_At;
-        worksheet.getCell(rowIndex + 2, 6).value = row.Updated_At;
-        // const currentRow = worksheet.getRow(rowIndex + 2);
-        // currentRow.height = 50; 
-      });
-
-      // Generate and download the Excel file
       workbook.xlsx.writeBuffer().then(buffer => {
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         const fileName = 'example.xlsx';
-
-        // Use FileSaver.js to save the file
         FileSaver.saveAs(blob, fileName);
       });
-      console.log('generate excel')
+
     },
 
     editUser(user) {
