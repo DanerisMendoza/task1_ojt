@@ -33,6 +33,7 @@
       :headers="tableHeaders"
       :items="filteredUsers"
       item-key="user_id"
+      @pagination="onPageChange"
     >
       <template v-slot:item="{ item }">
         <tr>
@@ -82,6 +83,10 @@ export default {
         { text: 'Actions', sortable: false },
       ],
       search: '', // Search input value
+      pagination: {
+        page: 1,
+        itemsPerPage: 10,
+      },
     };
   },
 
@@ -143,14 +148,29 @@ export default {
    
     },
     // local functions
+      onPageChange(page) {
+        this.pagination = page;
+      },
+
       generateExcel() {
-        const data = this.filteredUsers.map(user => ({
-        User_ID: user.user_id,
-        Role: user.role,
-        Username: user.username,
-        Created_At: new Date(user.created_at).toLocaleString(),
-        Updated_At: new Date(user.updated_at).toLocaleString(),
-      }));
+        const startIndex = (this.pagination.page - 1) * this.pagination.itemsPerPage;
+        let endIndex = startIndex + this.pagination.itemsPerPage;
+
+        // Check if endIndex exceeds the length of filteredUsers
+        if (endIndex > this.filteredUsers.length) {
+          endIndex = this.filteredUsers.length;
+        }
+
+        const slicedUsers = this.filteredUsers.slice(startIndex, endIndex);
+
+
+        const data = slicedUsers.map(user => ({
+          User_ID: user.user_id,
+          Role: user.role,
+          Username: user.username,
+          Created_At: new Date(user.created_at).toLocaleString(),
+          Updated_At: new Date(user.updated_at).toLocaleString(),
+        }));
 
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet('Sheet1');
