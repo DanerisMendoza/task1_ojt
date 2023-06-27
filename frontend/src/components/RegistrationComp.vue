@@ -40,10 +40,15 @@
                         .then(response => {
                             const result = response.data;
                             if(result != 'success'){
-                                alert(result);
+                                this.$swal.fire({
+                                    title: response.data,
+                                });
                             }
                             else{
-                                alert('success');
+                                this.$swal.fire({
+                                icon: 'success',
+                                title: 'Create Account Success!',
+                                });
                             }
                         })
                         .catch(error => {

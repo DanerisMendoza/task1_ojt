@@ -58,7 +58,6 @@ import PopupModal from './PopupModal.vue';
 
 export default {
   created() {
-    // this.$swal.fire('Are you sure you want to delete?', 'Welcome to SweetAlert2!', 'success');
     this.fetchStudents();
     this.channel = new BroadcastChannel('modalTrigger');
   },
@@ -115,7 +114,7 @@ export default {
     resetTb() {
       this.$swal
         .fire({
-          title: 'Are you sure you want to reset database?',
+          title: 'Are you sure you want to Reset Database?',
           text: "You won't be able to revert this!",
           icon: 'question',
           showCancelButton: true,
@@ -126,6 +125,12 @@ export default {
           if (result.isConfirmed) {
             axios
             .delete('/api/deleteAllUser')
+            .then(response => {
+              this.$swal.fire({
+                icon: 'success',
+                title: 'Database Reset Success!',
+              });
+            })
             .catch(error => {
               console.error(error);
             });
@@ -141,7 +146,12 @@ export default {
     },
     updateUserInfo() {
       if (this.$refs.password.value == '') {
-        alert('Password is Required');
+        this.$swal.fire({
+          icon: 'error',
+          title: 'Password is Required',
+          text: 'Please enter a password.',
+        });
+
         return;
       }
 
@@ -165,7 +175,10 @@ export default {
             })
             .then(response => {
               if (response.data == 'success') {
-                alert('update success!');
+                this.$swal.fire({
+                  icon: 'success',
+                  title: 'Update Success!',
+                });
               }
             })
             .catch(error => {
@@ -197,7 +210,10 @@ export default {
             })
             .then(response => {
               // Success: handle the response
-              alert(response.data);
+              this.$swal.fire({
+                icon: 'success',
+                title: response.data,
+              });
             })
             .catch(error => {
               // Error: handle the error
