@@ -158,6 +158,7 @@ export default {
       console.log(data);
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet('Sheet1');
+      const widthSize = 50;
 
       // Add headers
       worksheet.getCell('A1').value = 'User_ID';
@@ -167,6 +168,36 @@ export default {
       worksheet.getCell('E1').value = 'Created_At';
       worksheet.getCell('F1').value = 'Updated_At';
 
+      // Calculate maximum column width based on cell values
+      const columnWidths = {};
+      data.forEach(row => {
+        Object.keys(row).forEach((key, columnIndex) => {
+          const cellValue = row[key].toString();
+          const columnLetter = String.fromCharCode(65 + columnIndex); // A=65, B=66, etc.
+
+          if (!columnWidths[columnLetter] || cellValue.length > columnWidths[columnLetter]) {
+            columnWidths[columnLetter] = cellValue.length;
+          }
+        });
+      });
+
+// Adjust column widths
+Object.keys(columnWidths).forEach(column => {
+  const maxCellWidth = Math.max(10, columnWidths[column] + 2); // Minimum width of 10 and add extra padding
+  const columnWidth = Math.min(maxCellWidth, 80); // Limit the column width to a maximum of 30 characters
+
+  worksheet.getColumn(column).width = columnWidth;
+});
+
+
+      // Adjust column widths
+      // worksheet.getColumn('A').width = widthSize; // Set the width for column A
+      // worksheet.getColumn('B').width = widthSize; // Set the width for column B
+      // worksheet.getColumn('C').width = widthSize; // Set the width for column C
+      // worksheet.getColumn('D').width = widthSize; // Set the width for column D
+      // worksheet.getColumn('E').width = widthSize; // Set the width for column E
+      // worksheet.getColumn('F').width = widthSize; // Set the width for column F
+
       // Add data rows
       data.forEach((row, rowIndex) => {
         worksheet.getCell(rowIndex + 2, 1).value = row.User_ID;
@@ -175,6 +206,8 @@ export default {
         worksheet.getCell(rowIndex + 2, 4).value = row.Password;
         worksheet.getCell(rowIndex + 2, 5).value = row.Created_At;
         worksheet.getCell(rowIndex + 2, 6).value = row.Updated_At;
+        // const currentRow = worksheet.getRow(rowIndex + 2);
+        // currentRow.height = 50; 
       });
 
       // Generate and download the Excel file
