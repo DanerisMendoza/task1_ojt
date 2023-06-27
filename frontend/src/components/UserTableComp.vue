@@ -18,6 +18,8 @@
     </PopupModal>
 
     <button class="btn btn-danger" @click="resetTb">Reset Table</button>
+    <button class="btn btn-secondary" @click="generateExcel">Export To Excel</button>
+
     <br><br>
     <v-text-field
       v-model="search"
@@ -55,6 +57,8 @@
 <script>
 import axios from '../axiosConfig';
 import PopupModal from './PopupModal.vue';
+import ExcelJS from 'exceljs';
+import FileSaver from 'file-saver';
 
 export default {
   created() {
@@ -139,11 +143,57 @@ export default {
    
     },
     // local functions
+      generateExcel() {
+        const data = this.filteredUsers.map(user => {
+        return {
+          User_ID: user.user_id,
+          Role: user.role,
+          Username: user.username,
+          Password: user.password,
+          Created_At: new Date(user.created_at).toLocaleString(),
+          Updated_At: new Date(user.updated_at).toLocaleString(),
+        };
+      });
+
+      console.log(data);
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Sheet1');
+
+      // Add headers
+      worksheet.getCell('A1').value = 'User_ID';
+      worksheet.getCell('B1').value = 'Role';
+      worksheet.getCell('C1').value = 'Username';
+      worksheet.getCell('D1').value = 'Password';
+      worksheet.getCell('E1').value = 'Created_At';
+      worksheet.getCell('F1').value = 'Updated_At';
+
+      // Add data rows
+      data.forEach((row, rowIndex) => {
+        worksheet.getCell(rowIndex + 2, 1).value = row.User_ID;
+        worksheet.getCell(rowIndex + 2, 2).value = row.Role;
+        worksheet.getCell(rowIndex + 2, 3).value = row.Username;
+        worksheet.getCell(rowIndex + 2, 4).value = row.Password;
+        worksheet.getCell(rowIndex + 2, 5).value = row.Created_At;
+        worksheet.getCell(rowIndex + 2, 6).value = row.Updated_At;
+      });
+
+      // Generate and download the Excel file
+      workbook.xlsx.writeBuffer().then(buffer => {
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const fileName = 'example.xlsx';
+
+        // Use FileSaver.js to save the file
+        FileSaver.saveAs(blob, fileName);
+      });
+      console.log('generate excel')
+    },
+
     editUser(user) {
       this.selectedUser.user_id = user.user_id;
       this.selectedUser.username = user.username;
       this.$emitter.emit('editUserModal', true);
     },
+
     updateUserInfo() {
       if (this.$refs.password.value == '') {
         this.$swal.fire({
