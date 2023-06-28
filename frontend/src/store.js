@@ -3,6 +3,8 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
+//issue encounter when i reload tab all the value become null
+
 const store = new Vuex.Store({
   state: {
     user_id: null,

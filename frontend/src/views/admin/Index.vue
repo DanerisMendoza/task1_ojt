@@ -18,21 +18,24 @@
   },
   mounted() {
     window.addEventListener('storage', this.handleStorageChange);
-    console.log(this.$store.getters.getUserId);
-    console.log(this.$store.getters.getUsername);
-    console.log(this.$store.getters.getRole);
+    console.log('user_id: '+this.$store.getters.getUserId);
+    console.log('username: '+this.$store.getters.getUsername);
+    console.log('role: '+this.$store.getters.getRole);
 
   },
-  destroyed() {
+  
+  beforeDestroy() {
+    console.log('url is changing ...');
     window.removeEventListener('storage', this.handleStorageChange);
   },
+
   methods: {
     handleStorageChange(event) {
       if (event.key === 'username') {
         const newUsername = event.newValue;
         this.username = newUsername
         localStorage.setItem('username',newUsername);
-        if(newUsername == 'null'){
+        if(newUsername == null || newUsername == 'null'){
           this.$router.push('/');
         }
       }
