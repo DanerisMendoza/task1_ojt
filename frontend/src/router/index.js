@@ -63,18 +63,18 @@ router.beforeEach((to, from, next) => {
   const role = localStorage.getItem('role');
   // Checking if there is an active account, redirect to login if none
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (role === 'null') {
+    if (role == 'null') {
       next({ name: 'Login' });
       return;
     }
   }
   // Checking if the account is already logged in
   else {
-    if (role !== 'null') {
-      if (role === 'admin') {
+    if (role != 'null') {
+      if (role == 'admin') {
         next({ name: 'adminIndex' });
         return;
-      } else if (role === 'user') {
+      } else if (role == 'user') {
         next({ name: 'userIndex' });
         return;
       }
