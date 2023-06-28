@@ -55,9 +55,14 @@
                       this.role = response.data.role;
                       this.user_id = response.data.user_id;
 
+                      localStorage.setItem('user_id',this.user_id);
                       localStorage.setItem('username',this.username);
                       localStorage.setItem('role',this.role);
-                      localStorage.setItem('user_id',this.user_id);
+
+                      this.$store.commit('setUserId', this.user_id);
+                      this.$store.commit('setUsername', this.username);
+                      this.$store.commit('setRole', this.role);
+
 
                       //admin 
                       if(this.role == 'admin'){

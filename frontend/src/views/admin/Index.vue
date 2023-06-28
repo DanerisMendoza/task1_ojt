@@ -18,6 +18,10 @@
   },
   mounted() {
     window.addEventListener('storage', this.handleStorageChange);
+    console.log(this.$store.getters.getUserId);
+    console.log(this.$store.getters.getUsername);
+    console.log(this.$store.getters.getRole);
+
   },
   destroyed() {
     window.removeEventListener('storage', this.handleStorageChange);

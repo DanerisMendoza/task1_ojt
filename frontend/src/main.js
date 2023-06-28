@@ -11,6 +11,7 @@ import Pusher from 'pusher-js'
 import mitt from 'mitt'
 import vuetify from './plugins/vuetify'
 import Swal from 'sweetalert2';
+import store from './store';
 
 window.Pusher = Pusher
 
@@ -32,5 +33,6 @@ Vue.prototype.$swal = Swal;
 new Vue({
   router,
   vuetify,
+  store,
   render: h => h(App)
 }).$mount('#app')

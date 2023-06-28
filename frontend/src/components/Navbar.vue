@@ -45,6 +45,10 @@
         localStorage.setItem('username',null);
         localStorage.setItem('role',null);
         localStorage.setItem('user_id',null);
+
+        this.$store.commit('setUserId', null);
+        this.$store.commit('setUsername', null);
+        this.$store.commit('setRole', null);
       }
     }
   };
