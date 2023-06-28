@@ -3,7 +3,11 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-//issue encounter when i reload tab all the value become null
+/*
+  issue encounter when i reload tab all the value become null
+  The Vuex store is usually not persisted. It is handled like regular JavaScript: After the page is reloaded, the data is released. If you want to persist the Vuex Store in a browser, 
+  there are however possibilities for that. One example is vuex-persistedstate.
+*/
 
 const store = new Vuex.Store({
   state: {
