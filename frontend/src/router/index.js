@@ -61,9 +61,10 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const role = localStorage.getItem('role');
+  console.log(role);
   // Checking if there is an active account, redirect to login if none
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (role == 'null') {
+    if (role == 'null' || role == null) {
       next({ name: 'Login' });
       return;
     }
