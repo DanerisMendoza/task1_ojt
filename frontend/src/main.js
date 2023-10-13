@@ -17,8 +17,8 @@ window.Pusher = Pusher
 
 Vue.prototype.$Echo = new Echo({
   broadcaster: 'pusher',
-  key: process.env.VUE_APP_WEBSOCKETS_KEY,
-  wsHost: process.env.VUE_APP_WEBSOCKETS_SERVER,
+  key: 'local',
+  wsHost: '127.0.0.1',
   wsPort: 6001,
   forceTLS: false,
   disableStats: true,
