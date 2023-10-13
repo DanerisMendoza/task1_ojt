@@ -39,7 +39,7 @@ class ApiController extends Controller
         $user->password = bcrypt($request->input('password'));
         $user->role = $request->input('role');
         $user->save();
-        broadcast(new user_tb_data()); 
+        // broadcast(new user_tb_data()); 
         return 'success';
     }
 
@@ -68,7 +68,7 @@ class ApiController extends Controller
 
     public function deleteAllUser(){
         User::truncate();
-        broadcast(new user_tb_data());
+        // broadcast(new user_tb_data());
         return response()->json(['message' => 'All users have been deleted']);
     }
 
@@ -76,7 +76,7 @@ class ApiController extends Controller
         $user = User::where('user_id',$request->input('user_id'))->first();
         if($user){
             $user->delete();
-            broadcast(new user_tb_data());
+            // broadcast(new user_tb_data());
         }
         return response()->json('success');
     }
@@ -86,7 +86,7 @@ class ApiController extends Controller
         $user ->username = $request->input('username');
         $user ->password = bcrypt($request->input('password'));
         $user->save();
-        broadcast(new user_tb_data());
+        // broadcast(new user_tb_data());
         return 'success';
     }
 
