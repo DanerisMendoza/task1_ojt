@@ -286,9 +286,9 @@ export default {
     },
   },
   mounted() {
-    this.$Echo.channel('channel-user_tb_data').listen('user_tb_data', e => {
-      this.users = e.result;
-    });
+    // this.$Echo.channel('channel-user_tb_data').listen('user_tb_data', e => {
+    //   this.users = e.result;
+    // });
   },
 };
 </script>

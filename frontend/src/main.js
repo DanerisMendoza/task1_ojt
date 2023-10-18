@@ -13,17 +13,17 @@ import vuetify from './plugins/vuetify'
 import Swal from 'sweetalert2';
 import store from './store';
 
-window.Pusher = Pusher
+// window.Pusher = Pusher
 
-Vue.prototype.$Echo = new Echo({
-  broadcaster: 'pusher',
-  key: 'local',
-  wsHost: '127.0.0.1',
-  wsPort: 6001,
-  forceTLS: false,
-  disableStats: true,
-  cluster: 'mt1'
-})
+// Vue.prototype.$Echo = new Echo({
+//   broadcaster: 'pusher',
+//   key: 'local',
+//   wsHost: '127.0.0.1',
+//   wsPort: 6001,
+//   forceTLS: false,
+//   disableStats: true,
+//   cluster: 'mt1'
+// })
 
 const emitter = mitt()
 
