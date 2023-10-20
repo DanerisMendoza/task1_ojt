@@ -7,11 +7,11 @@
       <template v-slot:content>
         <label for="username">Enter New Username(Optional):</label>
         <br />
-        <input type="text" v-model="selectedUser.username" class="form-control"/>
+        <input type="text" v-model="selectedUser.username" class="form-control" />
         <br />
         <label for="password">Enter New or Current Password(Required):</label>
         <br />
-        <input type="password" ref="password" placeholder="password" class="form-control"/>
+        <input type="password" ref="password" placeholder="password" class="form-control" />
         <br /><br />
         <button class="btn btn-warning" @click="updateUserInfo">Update</button>
       </template>
@@ -19,22 +19,12 @@
 
     <button class="btn btn-danger" @click="resetTb">Reset Table</button>
     <button class="btn btn-secondary" @click="generateExcel">Export To Excel</button>
+    <button class="btn btn-secondary" @click="sendHello">Send Hello to WS</button>
 
     <br><br>
-    <v-text-field
-      v-model="search"
-      label="Search"
-      clearable
-      outlined
-      dense
-    ></v-text-field>
+    <v-text-field v-model="search" label="Search" clearable outlined dense></v-text-field>
 
-    <v-data-table
-      :headers="tableHeaders"
-      :items="filteredUsers"
-      item-key="user_id"
-      @pagination="onPageChange"
-    >
+    <v-data-table :headers="tableHeaders" :items="filteredUsers" item-key="user_id" @pagination="onPageChange">
       <template v-slot:item="{ item }">
         <tr>
           <td>{{ item.user_id }}</td>
@@ -109,6 +99,12 @@ export default {
     PopupModal,
   },
   methods: {
+    sendHello() {
+      const messageObject = { channel: 'channel1', message: 'hello from button' };
+      const jsonString = JSON.stringify(messageObject);
+      this.$ws.send(jsonString);
+    },
+
     // functions that call Laravel API
     fetchStudents() {
       axios
@@ -133,44 +129,44 @@ export default {
         .then(result => {
           if (result.isConfirmed) {
             axios
-            .delete('/api/deleteAllUser')
-            .then(response => {
-              this.$swal.fire({
-                icon: 'success',
-                title: 'Database Reset Success!',
+              .delete('/api/deleteAllUser')
+              .then(response => {
+                this.$swal.fire({
+                  icon: 'success',
+                  title: 'Database Reset Success!',
+                });
+              })
+              .catch(error => {
+                console.error(error);
               });
-            })
-            .catch(error => {
-              console.error(error);
-            });
           }
         });
-   
+
     },
     // local functions
-      onPageChange(page) {
-        this.pagination = page;
-      },
+    onPageChange(page) {
+      this.pagination = page;
+    },
 
-      generateExcel() {
-        const startIndex = (this.pagination.page - 1) * this.pagination.itemsPerPage;
-        let endIndex = startIndex + this.pagination.itemsPerPage;
+    generateExcel() {
+      const startIndex = (this.pagination.page - 1) * this.pagination.itemsPerPage;
+      let endIndex = startIndex + this.pagination.itemsPerPage;
 
-        // Check if endIndex exceeds the length of filteredUsers
-        if (endIndex > this.filteredUsers.length) {
-          endIndex = this.filteredUsers.length;
-        }
+      // Check if endIndex exceeds the length of filteredUsers
+      if (endIndex > this.filteredUsers.length) {
+        endIndex = this.filteredUsers.length;
+      }
 
-        const slicedUsers = this.filteredUsers.slice(startIndex, endIndex);
+      const slicedUsers = this.filteredUsers.slice(startIndex, endIndex);
 
 
-        const data = slicedUsers.map(user => ({
-          User_ID: user.user_id,
-          Role: user.role,
-          Username: user.username,
-          Created_At: new Date(user.created_at).toLocaleString(),
-          Updated_At: new Date(user.updated_at).toLocaleString(),
-        }));
+      const data = slicedUsers.map(user => ({
+        User_ID: user.user_id,
+        Role: user.role,
+        Username: user.username,
+        Created_At: new Date(user.created_at).toLocaleString(),
+        Updated_At: new Date(user.updated_at).toLocaleString(),
+      }));
 
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet('Sheet1');
@@ -228,26 +224,26 @@ export default {
           if (result.isConfirmed) {
             this.$emitter.emit('editUserModal', false);
             axios
-            .put('/api/updateUserByUser_id', {
-              user_id: this.selectedUser.user_id,
-              username: this.selectedUser.username,
-              password: this.$refs.password.value,
-            })
-            .then(response => {
-              if (response.data == 'success') {
-                this.$swal.fire({
-                  icon: 'success',
-                  title: 'Update Success!',
-                });
-              }
-            })
-            .catch(error => {
-              console.error(error);
-            });
-          } 
+              .put('/api/updateUserByUser_id', {
+                user_id: this.selectedUser.user_id,
+                username: this.selectedUser.username,
+                password: this.$refs.password.value,
+              })
+              .then(response => {
+                if (response.data == 'success') {
+                  this.$swal.fire({
+                    icon: 'success',
+                    title: 'Update Success!',
+                  });
+                }
+              })
+              .catch(error => {
+                console.error(error);
+              });
+          }
         });
 
-    
+
     },
 
     // Axios does not support sending request bodies with DELETE requests by default.
@@ -265,30 +261,53 @@ export default {
         .then(result => {
           if (result.isConfirmed) {
             axios
-        .delete('/api/deleteUserByUser_id', {
-            data: { user_id: user.user_id },
-            })
-            .then(response => {
-              // Success: handle the response
-              this.$swal.fire({
-                icon: 'success',
-                title: response.data,
+              .delete('/api/deleteUserByUser_id', {
+                data: { user_id: user.user_id },
+              })
+              .then(response => {
+                // Success: handle the response
+                this.$swal.fire({
+                  icon: 'success',
+                  title: response.data,
+                });
+              })
+              .catch(error => {
+                // Error: handle the error
+                console.error(error);
               });
-            })
-            .catch(error => {
-              // Error: handle the error
-              console.error(error);
-            });
-          } 
+          }
         });
 
-  
+
     },
   },
   mounted() {
     // this.$Echo.channel('channel-user_tb_data').listen('user_tb_data', e => {
     //   this.users = e.result;
     // });
+    this.$ws.addEventListener('message', (event) => {
+      console.log(JSON.parse(event.data));
+    });
+    // this.$ws.addEventListener('message', (event) => {
+    //   console.log(JSON.parse(event.data));
+    // });
+    // this.$ws.on('connection', (socket) => {
+    //   this.$ws.on('message', (message) => {
+    //     try {
+          // console.log(message)
+          // Parsing the received JSON string
+          // const receivedObject = JSON.parse(message);
+
+          // Accessing the 'channel1' property
+          // const channel1Message = receivedObject.channel1;
+
+          // console.log('Received message from client:', channel1Message);
+    //     } catch (error) {
+    //       console.error('Error parsing JSON:', error);
+    //     }
+    //   });
+    // });
+
   },
 };
 </script>

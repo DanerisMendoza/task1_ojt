@@ -37,7 +37,7 @@ class user_tb_data implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('channel-user_tb_data'),
+            new Channel('my-channel'),
         ];
     }
 }
